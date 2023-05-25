@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const Vehicle = require("./vehicle");
 
 //Creating Schema -> Blueprint
 const userSchema = new Schema({
@@ -29,6 +30,7 @@ const userSchema = new Schema({
     type: Boolean,
     required: true,
   },
+  vehicles: [{ type: Schema.Types.ObjectId, ref: Vehicle }],
 });
 
 // Instance methods
@@ -46,7 +48,7 @@ userSchema.methods.toggleAdmin = function () {
 // Statics which works on all the docs
 userSchema.statics.changeAdminRites = function () {
   console.log(this);
-  return this.updateMany({}, { isAdmin: true });
+  return this.updateMany({}, { isAdmin: false });
 };
 
 // Creating & exporting model
