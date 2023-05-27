@@ -50,20 +50,37 @@ module.exports.updateVehicleById = wrapper(async (req, res) => {
 });
 
 module.exports.deleteVehicleById = wrapper(async (req, res) => {
-  const { userId, vehicleId } = req.params;
-  await User.findByIdAndUpdate(userId, { $pull: { vehicles: vehicleId } });
-  const accessories = await Accessory.find();
+// 1
+//   const { userId, vehicleId } = req.params;
+//   await User.findByIdAndUpdate(userId, { $pull: { vehicles: vehicleId } });
+//   const accessories = await Accessory.find();
 
-  for (let i of accessories) {
-    const updatedAccessories = [];
-    for (let j of i.usedIn) {
-      if (ObjectID(j).valueOf() !== vehicleId) {
-        updatedAccessories.push(j);
-      }
-    }
-    i.usedIn = updatedAccessories;
-    await i.save();
+//   for (let i of accessories) {
+//     const updatedAccessories = [];
+//     for (let j of i.usedIn) {
+//       if (ObjectID(j).valueOf() !== vehicleId) {
+//         updatedAccessories.push(j);
+//       }
+//     }
+//     i.usedIn = updatedAccessories;
+//     await i.save();
+//   }
+//   await Vehicle.findByIdAndDelete(vehicleId);
+//   res.send("Vehicle deleted!");
+
+ // 2
+  const { vehicleId } = req.params;
+  await User.findByIdAndUpdate(vehicle.owner, {
+    $pull: { vehicles: vehicleId },
+  });
+  const vehicle = await Vehicle.findById(vehicleId);
+
+  for (let i of vehicle.accessories) {
+    const accessory = await Accessory.findById(i);
+    await Accessory.findByIdAndUpdate(accessory._id, {
+      $pull: { usedIn: vehicleId },
+    });
   }
   await Vehicle.findByIdAndDelete(vehicleId);
-  res.send("Vehicle deleted!");
+  res.send("Vehicle has been removed");
 });
