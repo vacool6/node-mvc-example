@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 //
 const userRouter = require("./routes/user");
-const vehicleRouter = require("./routes//vehicle");
+const vehicleRouter = require("./routes/vehicle");
 const accessoriesRouter = require("./routes/accessories");
 
 // Middleware's
